@@ -1,0 +1,61 @@
+<header>
+
+    <div class="header-1">
+
+        <a class="logo" href="{{url_for('main')}} "><i class="fas fa-shopping-basket"></i>SGMart</a>
+
+        <form action="{{url_for('result')}}" class="search-box-container">
+            <input type="search" type="search" placeholder="Search" aria-label="Search" name="q" id="search-box">
+            <label for="search-box" class="fas fa-search" type="submit"></label>
+        </form>
+
+    </div>
+
+    <div class="header-2">
+
+        <div id="menu-bar" class="fas fa-bars"></div>
+
+        <nav class="navbar">
+            <a href="{{url_for('main')}}">Home</a>
+
+            <a href="{{url_for('home')}}">Products</a>
+            
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Brands</a>
+                <div class="dropdown-menu">
+                  {% for brand in brands %}
+                  <a class="dropdown-item" href="{{url_for('get_brand', id = brand.id)}}" >{{brand.name}}</a>
+                  {% endfor %}
+                </div>
+            </div>
+
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" type="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                <div class="dropdown-menu">
+                  {% for category in categories %}
+                  <a class="dropdown-item" href="{{url_for('get_category', id = category.id)}}" >{{category.name}}</a>
+                  {% endfor %}
+                </div>
+            </div>
+
+            <a href="{{url_for('customerContact')}}">Contact</a>
+            
+        </nav>
+        
+        <div class="icons">
+          {% if current_user.is_authenticated %}
+
+          <a>{{current_user.name}}</a>
+          <a href="{{url_for('customer_logout')}}" class="">Logout</a>
+          {% else %}
+          <a class="fas fa-user-circle" href="{{url_for('customerLogin')}}" style="font-size: 25px !important;"></a>
+          {% endif %}
+          <a class="fas fa-shopping-cart" href="{{url_for('getCart')}}" tabindex="-1" style="font-size: 25px !important;"> ({{session['Shoppingcart'] | length}})</a>
+        </div>
+
+    </div>
+
+</header>
+</body>
+</html>
+

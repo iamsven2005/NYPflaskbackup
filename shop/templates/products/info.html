@@ -1,0 +1,170 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'includes/_navbar.html' %}
+{% from "includes/_formhelpers.html" import render_field %}
+
+<style>
+  .row {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  -ms-flex-wrap: wrap; /* IE10 */
+  flex-wrap: wrap;
+  margin: 0 -16px;
+}
+
+.col-25 {
+  -ms-flex: 25%; /* IE10 */
+  flex: 25%;
+}
+
+.col-50 {
+  -ms-flex: 50%; /* IE10 */
+  flex: 50%;
+}
+
+.col-75 {
+  -ms-flex: 75%; /* IE10 */
+  flex: 75%;
+}
+
+.col-25,
+.col-50,
+.col-75 {
+  padding: 25px 16px;
+}
+
+.container {
+  background-color: #f2f2f2;
+  padding: 5px 20px 15px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+}
+
+input[type=text], input[type=tel] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+.btn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  width: 100%;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+span.price {
+  float: right;
+  color: grey;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other (and change the direction - make the "cart" column go on top) */
+@media (max-width: 800px) {
+  .row {
+    flex-direction: column-reverse;
+  }
+  .col-25 {
+    margin-bottom: 20px;
+  }
+}
+</style>
+<div class="row">
+    <div class="container">
+      <form method="post" enctype="multipart/form-data">
+        
+        <div class="row">
+          <div class="col-50">
+            <h3>Contact info:</h3>
+            {{ render_field(form.email, class='form-control')}}
+            <h3>Shipping Address: </h3>
+            
+            <div class="row">
+              <div class="col-50">
+                {{ render_field(form.first_name, class='form-control')}}
+              </div>
+              <div class="col-50">
+                {{ render_field(form.last_name, class='form-control')}}
+              </div>
+            </div>
+            {{ render_field(form.company, class='form-control')}}
+            
+            {{ render_field(form.address, class='form-control')}}
+            {{ render_field(form.unit_number, class='form-control')}}
+
+            <div class="row">
+              
+              <div class="col-50">
+                {{ render_field(form.postal_code, class='form-control')}}
+              </div>
+              <div class="col-50">
+                {{ render_field(form.phone, class='form-control')}}
+              </div>
+            </div>
+            <p><input type="submit" class="btn btn-success" value="Continue to Payment"></p>
+          </form>
+          </div>
+
+          <div class="col-50">
+            <h3>Cart            
+              <span class="price" style="color:black">
+              <i class="fa fa-shopping-cart"></i>
+              <b>
+                  {{total}}
+              </b>
+            </span></h3>                  
+
+            <div class="col-25">
+              <div>
+                <table class="table table-sm">
+                    <thead>
+                        <th>Sr</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </thead>
+                    <tbody>
+                        {% for key, product in session['Shoppingcart'].items() %}
+                        {% set discount =(product.discount/100) * product.price|float %}
+                        <tr>
+                            <td>{{loop.index}}</td>
+                            <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="80" height="80"></td>
+                            <td>{{product.name}}</td>
+        
+                            <td>${{"%.2f"|format(product.price)}}</td>
+                            <td>{{product.quantity}}</td>
+                            {% set subtotal = product.quantity|int * product.price|float  %}
+                            <td>${{"%.2f"|format(subtotal - discount|round(1,'floor')) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+  </div>
+</div>
+{% endblock %}
