@@ -1,6 +1,5 @@
 from flask import render_template,session, request,redirect,url_for,flash,current_app,make_response
 from flask_login import login_required, current_user, logout_user, login_user
-from zmq import GSSAPI_NT_KRB5_PRINCIPAL
 from shop import app,db,photos, search,bcrypt,login_manager
 from .forms import CustomerRegisterForm, CustomerLoginForm, contactForm
 from shop.products.models import Category,Brand, Addproduct
@@ -67,7 +66,6 @@ def customerLogin():
     if form.validate_on_submit():
         email = form.email.data
         if email[-8:] == 'site.com':
-            if admin and bcrypt.check_password_hash(admin.password, form.password.data):
                 name = admin.username
                 session['email'] = form.email.data
                 session['id'] = admin.id
@@ -78,9 +76,6 @@ def customerLogin():
                 db.session.add(log)
                 db.session.commit()
                 return redirect(url_for('admin'))
-            else:
-                flash(f'Wrong email and password', 'danger')
-                return redirect(url_for('customerLogin'))
         else:
 
             if customer and bcrypt.check_password_hash(customer.password, form.password.data):
